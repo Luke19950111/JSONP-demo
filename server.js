@@ -15,7 +15,9 @@ var server = http.createServer(function (request, response) {
     //从这里开始看，上面不要看
 
     if (path === '/') {  // 如果用户请求的是 / 路径
-        var string = fs.readFileSync('./index.html')  // 就读取 index.html 的内容
+        var string = fs.readFileSync('./index.html','utf8')  // 就读取 index.html 的内容
+        var amount = fs.readFileSync('./db','utf8')
+        string = string.replace('&&&amount&&&',amount)
         response.setHeader('Content-Type', 'text/html;charset=utf-8')  // 设置响应头 Content-Type
         response.end(string)   // 设置响应消息体
     }else if (path === '/style.css') {   // 如果用户请求的是 /style.css 路径
@@ -26,10 +28,15 @@ var server = http.createServer(function (request, response) {
         var string = fs.readFileSync('./main.js')
         response.setHeader('Content-Type', 'application/javascript')
         response.end(string)
+    }else if (path === '/pay' && method.toUpperCase() === 'POST'){
+        var amount = fs.readFileSync('./db','utf8')
+        var newAmount = amount - 1
+        fs.writeFileSync('./db',newAmount)
+        response.end('success')
     }else {  // 如果上面都不是用户请求的路径
         response.statusCode = 404
         response.setHeader('Content-Type', 'text/html;charset=utf-8')  // 设置响应头 Content-Type
-        response.end('找不到对应的路径，你需要自行修改 index.js')
+        response.end('找不到对应的路径，你需要自行修改 index.html')
     }
 
     // 代码结束，下面不要看
