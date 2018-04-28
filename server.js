@@ -32,7 +32,9 @@ var server = http.createServer(function (request, response) {
         var amount = fs.readFileSync('./db','utf8')
         var newAmount = amount - 1
         fs.writeFileSync('./db',newAmount)
-        response.end('amount.innerText = amount.innerText - 1')
+        response.end(
+            `${query.callback}.call(undefined, 'success')`
+        )
     }else {  // 如果上面都不是用户请求的路径
         response.statusCode = 404
         response.setHeader('Content-Type', 'text/html;charset=utf-8')  // 设置响应头 Content-Type

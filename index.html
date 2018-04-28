@@ -7,12 +7,26 @@
 <h5>您的账户余额是<span id="amount">&&&amount&&&</span></h5>
 <button id="button">打1块钱</button>
 <script>
+   
+
     button.addEventListener('click',function(){
         let script = document.createElement('script')
-        script.src = '/pay'
+        let functionName = 'jack' + parseInt(Math.random() * 100000000, 10) //取随机数
+        window[functionName] = function(result){
+            if(result === 'success'){
+            amount.innerText = amount.innerText - 1
+            }
+        }
+        script.src = 'http://jack.com:8002/pay?callback=' + functionName
         document.body.appendChild(script)
         script.onload = function(e){
             e.currentTarget.remove()
+            delete window[functionName] //随机函数名用完就删掉
+        }
+        script.onerror = function(e){
+            alert('fali')
+            e.currentTarget.remove()
+            delete window[functionName]
         }
     })
 </script>
